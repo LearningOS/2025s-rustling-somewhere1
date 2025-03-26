@@ -101,8 +101,26 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
 fn bracket_match(bracket: &str) -> bool
 {
-	//TODO
-	true
+	let mut stack = Stack::new();
+    let bracket_pairs = [('(', ')'), ('{', '}'), ('[', ']')].iter().cloned().collect::<std::collections::HashMap<_, _>>();
+
+    for c in bracket.chars() {
+        match c {
+            '(' | '{' | '[' => stack.push(c),
+            ')' | '}' | ']' => {
+                if let Some(open_bracket) = stack.pop() {
+                    if bracket_pairs[&open_bracket] != c {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+            _ => {} // Ignore other characters
+        }
+    }
+
+    stack.is_empty()
 }
 
 #[cfg(test)]

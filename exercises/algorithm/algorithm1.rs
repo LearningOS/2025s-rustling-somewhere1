@@ -2,8 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
-
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
@@ -69,17 +67,50 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+
+}
+impl<T: Ord + Copy> LinkedList<T>{
+
+    pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		let mut new_list = LinkedList::new();
+        let mut node_a = list_a.start;
+        let mut node_b = list_b.start;
+
+        // 遍历两个链表，直到其中一个链表为空
+        while let (Some(node_a_ptr), Some(node_b_ptr)) = (node_a, node_b) {
+            let node_a_val = unsafe { (*node_a_ptr.as_ptr()).val };
+            let node_b_val = unsafe { (*node_b_ptr.as_ptr()).val };
+
+            if node_a_val < node_b_val {
+                // 将 node_a 的值添加到新链表
+                new_list.add(node_a_val);
+                // 移动 node_a 指针
+                node_a = unsafe { (*node_a_ptr.as_ptr()).next };
+            } else {
+                // 将 node_b 的值添加到新链表
+                new_list.add(node_b_val);
+                // 移动 node_b 指针
+                node_b = unsafe { (*node_b_ptr.as_ptr()).next };
+            }
         }
+
+        // 将剩余的节点添加到新链表
+        while let Some(node_a_ptr) = node_a {
+            let node_a_val = unsafe { (*node_a_ptr.as_ptr()).val };
+            new_list.add(node_a_val);
+            node_a = unsafe { (*node_a_ptr.as_ptr()).next };
+        }
+
+        while let Some(node_b_ptr) = node_b {
+            let node_b_val = unsafe { (*node_b_ptr.as_ptr()).val };
+            new_list.add(node_b_val);
+            node_b = unsafe { (*node_b_ptr.as_ptr()).next };
+        }
+
+        new_list
 	}
 }
-
 impl<T> Display for LinkedList<T>
 where
     T: Display,

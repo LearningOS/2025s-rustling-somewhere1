@@ -3,10 +3,26 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
+
+fn sort<T: Ord + Copy>(array: &mut [T]){
 	//TODO
+    let len = array.len();
+    for i in 0..len {
+        // 假设当前索引的元素是最小值
+        let mut min_index = i;
+        // 在剩余的数组中找到最小值的索引
+        for j in (i + 1)..len {
+            if array[j] < array[min_index] {
+                min_index = j;
+            }
+        }
+        // 如果找到的最小值索引不是当前索引，交换它们
+        if min_index != i {
+            array.swap(i, min_index);
+        }
+    }
+    
 }
 #[cfg(test)]
 mod tests {
